@@ -1,3 +1,4 @@
+#!/bin/bash
 # walk through parameters and grep them if they exist in the current working directory
 while [ "$1" != "" ];
 do 
