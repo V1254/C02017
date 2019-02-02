@@ -12,7 +12,7 @@ do
 done
 
 echo "Directories in sub-directories of $1 starting with \"dir\":"
-for i in $(find "$1" -type d -name "*dir*")
+for i in $(find "$1" -type d -name "dir*")
 do
 	echo "$i"
 done
