@@ -7,7 +7,7 @@ then
 	exit 1
 fi
 
-# checks for read permissions.
+# checks for file existence.
 if [ ! -f $1 ];
 then
 	echo "$1 does not exist"
