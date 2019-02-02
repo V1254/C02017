@@ -1,0 +1,93 @@
+# Q5. Experiment using the linux scheduler and different patterns of concurrency
+
+## "ssh" command
+
+* Scenario 1: no parallelism
+
+The command I used was:
+  /usr/bin/time -o ssh-timing1.txt -v parallel -j1 'ssh-keygen -G /tmp/mods-{}.candidate -b 768' ::: {1..8}
+
+	TurnAround Time: 9:05.49 (m:ss)
+	CPU Usage: 99.7% on a 4-core machine => ~25% overall CPU usage.
+	Interactivity: No obversaval change:
+		Command Used to observe this: `time ls -aR`.
+		Average time out of 10 Runs : 0.265 (s).
+
+* Scenario 2: number of processes equal to number of processors
+
+The command I used was:
+  /usr/bin/time -o ssh-timing2.txt -v parallel -j4 'ssh-keygen -G /tmp/mods-{}.candidate -b 768' ::: {1..8}
+
+	TurnAround Time: 2:35.07 (m:ss)
+	CPU Usage: 354% on a 4-core machine => ~89% CPU usage.
+	Interactivity: some obversaval change, the command below took an extra 0.129 seconds on average to execute.
+		Command Used to observe this: `time ls -aR`.
+		Average time out of 10 Runs : 0.394 (s).
+	
+* Scenario 3: twice the number of processes as the number of processors
+
+The command I used was:
+  /usr/bin/time -o ssh-timing3.txt -v parallel -j8 'ssh-keygen -G /tmp/mods-{}.candidate -b 768' ::: {1..8}
+
+	TurnAround Time: 2:24.63 (m:ss)
+	CPU Usage: 377% on a 4-core machine => ~94% total usage
+	Interactivity: took less time than scenario 2.
+		Command Used to observe this: `time ls -aR`.
+		Average time out of 10 Runs : 0.356 (s).
+### Conclusion
+
+(These are just examples: you need to make up your own mind about the
+best criteria based on the evidence.)
+
+* For criteria A I think Scenario 3 was best because the total turnaround time was the least(2:24.63) of the 3 scenarios. Furthermore
+	it also had the least Voluntary Context Switches (~315) meaning the threads were blocking less frequently. 
+
+* For criteria B I think Scenario 3 and 2 were about equal, but better
+	than Scenario 1 because we limited scenario 1 to exactly one out of the 4 cores, although it utilised that core very well (99.7%) 	  when taking into account the average it only used about 25% of available cpu compared to 89% and 94% as above!.
+
+* For criteria C I think Scenario 1 was better because the command only used exactly one core, the other 4 cores were able to full function
+	and do their job without the overhead of other the same process running on it as in scenario 2 and 3. The average time out of 10 	 runs to complete the command `ls -aR' was the least in scenario 1. THe interactvity would hardly be noticeable to normal users.
+
+
+
+## "grep" command
+
+## The tests were done on personal machine, so results maybe different to what is expected.
+
+* Scenario 1: no parallelism
+
+The command I used was:
+  /usr/bin/time -o grep-timing1.txt -v parallel -j1 'grep -r $(number -l {}) /usr/share/doc > /tmp/grep{}.txt' ::: {1..8}
+
+	TurnAround Time: 0:00.86 (m:ss)
+	CPU Usage: 100% on a 4-core machine => 25% overall CPU usage.
+	Interactivity: No obversaval change time could not be used as it was just too quick.
+
+* Scenario 2: number of processes equal to number of processors
+
+The command I used was:
+  /usr/bin/time -o grep-timing2.txt -v parallel -j4 'grep -r $(number -l {}) /usr/share/doc > /tmp/grep{}.txt' ::: {1..8}
+
+	TurnAround Time: 0:00.32 (m:ss)
+	CPU Usage: 276% on a 4-core machine => 69% overall cpu usage
+	Interactivity:  No obversaval change time could not be used as it was just too quick.
+			
+* Scenario 3: twice the number of processes as the number of processors
+
+The command I used was:
+  /usr/bin/time -o grep-timing3.txt -v parallel -j8 'grep -r $(number -l {}) /usr/share/doc > /tmp/grep{}.txt' ::: {1..8}
+
+	TurnAround Time: 0:01.01 (m:ss)
+	CPU Usage: 92%
+	Interactivity:  No obversaval change time could not be used as it was just too quick.
+### Conclusion
+
+(These are just examples: you need to make up your own mind about the
+best criteria based on the evidence.)
+
+* For criteria A I think Scenario 1 was best because it had the least turnaround time of (.86) as it was only running 1 instant of the process on exactly one core utilising all of the core.
+
+* For criteria B I think Scenario 2 was best because it had the greatest overall cpu usage of (69%) among the three scenerios.
+
+* For criteria C I think all scenarios were about equal. 
+
