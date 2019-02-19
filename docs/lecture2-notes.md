@@ -50,5 +50,36 @@
   The OS stores information about each process in a **process control block** (PCB).
   <br>
   **Multi-tasking:** is the simultaneous running of two or more processes.
+  <br>
+  
+  Shared code must not be changed during execution, and each process requires its own data area.
+  <br>
+  
+  #### Process Creation
+  
+  Created by a user via  Command:
+  
+    When a User invokes a program, OS creates a PCB to represent the execution of that process. 
+    OS also allocates resources for the process.
+    Thus a process consists of machine code in memory and a PCB.
+  
+  Created by another process which is known as **spawning** a process.
+  
+    The process that creates a new process is called the parent while the created process is the child.
+    The child can also spawn further processes hence forming a tree of processes.
   
   
+  ### Kernel Mode vs User Mode
+  
+   OS needs to **protect** processes from each other for security.
+
+   **Supervisor** mode can only invoked by the OS.
+
+   **Kernel mode** reserved for the lowest-level most trusted functions of the operation System. Crashes in kernel mode are 
+   catastrophic as they will halt the entire pc.
+
+   Applications, Windows API and User-mode drivers run in **User Mode**
+
+### The Dispatcher
+
+ After an interrupt has been handled, control is then passed to the **Dispatcher** or **Low level scheduler**
