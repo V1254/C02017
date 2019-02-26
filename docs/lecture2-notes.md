@@ -83,3 +83,38 @@
 ### The Dispatcher
 
  After an interrupt has been handled, control is then passed to the **Dispatcher** or **Low level scheduler**
+ 
+ 
+### States of processes.
+
+The currently running process is in the **RUNNING** state; only one process can be in this state.
+
+#### Clock interrupt:
+ Initiated by a clock within the cpu.
+ 
+ Gives the dispatches an opportunity to context switch.
+ 
+ A process stopped by a clock interrupt goes to the **READY** state.
+ 
+#### I/O interrupt:
+ Initiated by the CPU when an I/O instruction occurs in the running process or by an I/O device signalling completion.
+ 
+ When a process starts an I/O process it goes to the **BLOCKED** state.
+ 
+ When an I/O operation completes for a process, the process goes to the **READY** state.
+ 
+ The **DISPATCHER** can only **SELECT** a process to run only if it is in the **READY** sate.
+ 
+  ##### Diagram of process states
+  ![](https://i.imgur.com/2KH8yyV.png)
+  
+  
+  ## Summary:
+  
+  - A process can be **RUNNING,READY** or **BLOCKED**
+  - **Interrupts** are used to stop the currently **RUNNING** process.
+  - A **Clock Interrupt** causes the current process to become **READY**.
+  - An **I/O Interrupt** causes the current process to become **BLOCKED** and upon completion becomes **READY**
+  - The **Dispatcher** chooses the next process to run from a **QUEUE** of **Ready** processes.
+  - **Scheduling:** is the policy for choosing among the **READY** processes.
+
