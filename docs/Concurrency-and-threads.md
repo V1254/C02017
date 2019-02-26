@@ -131,6 +131,15 @@ Formula for calculating the total number of possible interleaves of two process 
 m/n are number of instructions in two different process.
 
 
+### Concurrent Programming Issues
+
+The concurrent processes must interact with each other in order to **share resources** or **exchange data**.
+
+**Synchronisation**: when, how and with what **language abstractions** can we synchronise computation to eliminate **unacceptable interleavings** and thus unacceptable outputs.
+
+**Distribution:** how can we **distribute processes** among a **number of processors**, and how can a process on one processor
+**interact** with another process on a different processor.
+
 
 
 
