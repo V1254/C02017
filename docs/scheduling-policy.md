@@ -96,5 +96,21 @@ Designed to continuously communicate with the user.
   
   **Context switch:** is the procedure of replacing the currently **running** process by another one. This takes a **non-zero amount of time.**
   
+  If the quantum is too short, the CPU spends a large proportion of its time **context switching**.
+  
+  If the quantum is too long then the **response time** may become unacceptable (Behaves like **FCFS**).
+  
+  ## Multi-level schedulers
+  
+  Most real systems use multiple levels of job queue.
+  
+  For example 3 queues; High, Medium and Low priority Ready queues.
+  
+  Each queue can operate its own policy.
+  
+  Process that are **preempted** move between the different levels depending on various criteria, eg: age of the process.
+  
+  Higher level queues are given more priority by the scheduler.
+  
 
 
