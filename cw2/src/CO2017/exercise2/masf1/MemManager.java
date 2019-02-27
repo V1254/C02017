@@ -5,7 +5,7 @@ import java.util.Arrays;
 /**
  * Abstract class MemManager representing the current state of memory and methods to grant access to it.
  *
- * @author Mohamed Abdulwahid Sharif-Farah (masf1) 179029141
+ * @author (masf1) 179029141
  */
 public abstract class MemManager {
 
@@ -27,7 +27,7 @@ public abstract class MemManager {
     /**
      * Create a new MemManager of specified size.
      *
-     * @param s the total size of memory to be created
+     * @param s - the total size of memory to be created
      */
 
     public MemManager(int s) {
@@ -53,36 +53,30 @@ public abstract class MemManager {
     /**
      * Find an address in memory where s amount of space is available.
      *
-     * @param s the size of memory that needs to be allocated.
+     * @param s - the size of memory that needs to be allocated.
      * @return the memory address of a suitable space of at least size s.
      */
     protected abstract int findSpace(int s);
 
 
     /**
-     * Start at address pos and calculate the size of the contiguous empty space begining there.
+     * Start at address pos and calculate the size of the contiguous empty space beginning there.
      *
-     * @param pos start address
+     * @param pos - start address
      * @return the number of free memory cells, starting at the given address
      */
     int countFreeSpacesAt(int pos) {
-
         int space = 0;
-
-        while (true) {
-            // guard for if at the end of the memory
-            if (pos >= _memory.length) {
+        while (pos < _memory.length) {
+            // if the current spot is not empty return the value of space.
+            if(_memory[pos] != '.')
                 return space;
-            }
 
-            // empty space is any position with the character '.'
-            if (_memory[pos] == '.') {
-                space++;
-                pos++;
-            } else {
-                return space;
-            }
+            // otherwise increment both and continue.
+            space++;
+            pos++;
         }
+        return space;
     }
 
     /**
@@ -95,26 +89,29 @@ public abstract class MemManager {
     public synchronized void allocate(Process p) throws InterruptedException {
 
         // block until space is available
-        while (p.getSize() > _largestSpace) wait();
+        while (p.getSize() > _largestSpace) {
+            wait();
+        }
 
         // address of free space.
         int freeAddress = findSpace(p.getSize());
 
+        // assign address to the process
         p.setAddress(freeAddress);
 
-        for (int i = freeAddress; i < freeAddress + p.getSize(); i++) {
-            _memory[i] = p.getID();
-        }
+        // fill from freeAddress to freeAddress + size with the processes id.
+        Arrays.fill(_memory,freeAddress,(freeAddress+p.getSize()),p.getID());
 
         // Re-caculate the value of the _largestSpace.
         reCalculateLargestSpace();
 
-        // changed
+        // the state of memory has changed.
         _changed = true;
 
-        // notify the squad
-        notifyAll();
 
+
+        // notify any blocked processes that this operation is complete.
+        notifyAll();
     }
 
     /**
@@ -125,9 +122,7 @@ public abstract class MemManager {
     public synchronized void free(Process p) {
 
         // Reset the contents of the memory array used by the process so that it contains '.' again.
-        for (int i = p.getAddress(); i < (p.getAddress() + p.getSize()); i++) {
-            _memory[i] = '.';
-        }
+        Arrays.fill(_memory,p.getAddress(),(p.getAddress() + p.getSize()),'.');
 
         // Reset the address allocated to the process to -1.
         p.setAddress(-1);
@@ -165,10 +160,12 @@ public abstract class MemManager {
 
             sb.append(_memory[i]);
 
-            // end the row
-            sb.append("|");
-            // start a new line for the next row.
-            sb.append("\n");
+            if (i == _memory.length - 1 || i % 20 == 19) {
+                // end the row with pipe
+                sb.append("|");
+                // start a new line for the next row.
+                sb.append("\n");
+            }
         }
 
         // add the final string displayed as ls:
@@ -183,17 +180,16 @@ public abstract class MemManager {
      *
      * @return The largest available free space in _memory.
      */
-    private int reCalculateLargestSpace() {
-        _largestSpace = 0;
-        int start = 0;
-        while (start < _memory.length) {
+    private synchronized void reCalculateLargestSpace() {
+        this._largestSpace = 0;
+        int counter = 0;
+
+        while (counter < _memory.length) {
             //size of space at curr
-            int thisPass = countFreeSpacesAt(start);
-            _largestSpace = Math.max(_largestSpace, thisPass);
-            //jump to the address after the free block beginning at curr
-            start += Math.max(1, thisPass);
+            int currentSpace = countFreeSpacesAt(counter);
+            this._largestSpace = Math.max(this._largestSpace, currentSpace);
+            counter += currentSpace > 1 ? currentSpace : 1;
         }
-        return _largestSpace;
     }
 
 
