@@ -3,7 +3,7 @@ package CO2017.exercise2.masf1;
 /**
  * Class to represent a Process.
  *
- * @author Mohamed Abdulwahid Sharif-Farah (masf1) 179029141
+ * @author (masf1) 179029141
  */
 public class Process implements Runnable {
 
