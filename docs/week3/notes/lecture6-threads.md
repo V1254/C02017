@@ -34,7 +34,7 @@ Then simply instantiate a new instance and start the thread.
 
 ```java
     ExThread t =  new ExThread(10);
-    t,start();
+    t.start();
 ```
 
 #### Thread Class Methods
