@@ -1,16 +1,16 @@
 package CO2017.exercise2.masf1;
 
 /**
- * Concrete Class to represent a MemManager using a best fit allocation policy.
+ * Concrete Class to represent a MemManager using a <b>best fit</b> allocation policy.
  *
  * @author (masf1) 179029141
  */
 public class BestFitMemManager extends MemManager {
 
     /**
-     * Construct a BestFitMemManager instance.
+     * Construct a BestFitMemManager <b>instance</b>.
      *
-     * @param s the total size of memory to be created
+     * @param s - the total size of memory to be created
      */
 
     public BestFitMemManager(int s) {
@@ -18,14 +18,15 @@ public class BestFitMemManager extends MemManager {
     }
 
     /**
-     * Find an address space large enough for s using the best fit strategy
+     * Find an address space large enough for s using the <b>best fit</b> strategy
      *
-     * @param s the size of memory that needs to be allocated.
+     * @param s - the size of memory that needs to be allocated.
      * @return the address of a space of at least size s.
      */
     @Override
     protected int findSpace(int s) {
 
+        // start address of best fit.
         int startAddress = -1;
         int currentBestSize = 0;
 
@@ -40,9 +41,10 @@ public class BestFitMemManager extends MemManager {
             // check availSize is enough to fit s.
             if (availableSize >= s) {
 
-                // update the startAddress the first time an availableSpace is found for s.
+                // update the startAddress and current worstSize the first time an availableSpace is found for s.
                 if (startAddress < 0) {
                     startAddress = counter;
+                    currentBestSize = availableSize;
                 }
                 // update the value of size depending on the currentAvailable size.
                 // if the availAble size is smaller than the current size and also fits S then it is considered the better size.
@@ -52,11 +54,11 @@ public class BestFitMemManager extends MemManager {
                 }
             }
 
-            // jump to the next position after the free spaces or go the next counter.
-            counter += 1 > availableSize ? 1 : availableSize;
+            // jump to the next position after the free spaces or go the next memory position.
+            counter += availableSize > 1 ? availableSize : 1;
         }
 
-        // returns -1 if no address is available, else it returns the address found from the loop.
+
         return startAddress;
     }
 

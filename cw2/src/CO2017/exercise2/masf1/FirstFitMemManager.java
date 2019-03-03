@@ -1,23 +1,23 @@
 package CO2017.exercise2.masf1;
 
 /**
- * Concrete Class to represent a MemManager using a first fit allocation policy.
+ * Concrete Class to represent a MemManager using a <b>first fit</b> allocation policy.
  */
 public class FirstFitMemManager extends MemManager {
 
     /**
      * Construct a FirstFitMemManager instance.
      *
-     * @param s the total size of memory to be created
+     * @param s - the total size of memory to be created
      */
     public FirstFitMemManager(int s) {
         super(s);
     }
 
     /**
-     * Find an address space large enough for s using the first fit strategy
+     * Find an address space large enough for s using the <b>first fit</b> strategy
      *
-     * @param s the size of memory that needs to be allocated.
+     * @param s - the size of memory that needs to be allocated.
      * @return the address of a space of at least size s.
      */
     @Override
@@ -36,11 +36,11 @@ public class FirstFitMemManager extends MemManager {
                 return counter;
             }
 
-            // jump counter to the next position after all the availableSpace.
+            // jump counter to the next position after all the availableSpace. or 1 if no space available.
             counter += availableSize > 1 ? availableSize : 1;
         }
 
-        // only reach here if no space was found to fit s.
+        // only reached if there is no space for s.
         return -1;
     }
 

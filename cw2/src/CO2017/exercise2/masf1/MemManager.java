@@ -69,7 +69,7 @@ public abstract class MemManager {
         int space = 0;
         while (pos < _memory.length) {
             // if the current spot is not empty return the value of space.
-            if(_memory[pos] != '.')
+            if (_memory[pos] != '.')
                 return space;
 
             // otherwise increment both and continue.
@@ -80,10 +80,10 @@ public abstract class MemManager {
     }
 
     /**
-     * Allocate memory for a process
+     * Allocate memory for a process; block until space is available
      *
-     * @param p The Process to allocate memory for.
-     * @throws InterruptedException via wait.
+     * @param p - Process to allocate memory for
+     * @throws InterruptedException - via wait
      */
 
     public synchronized void allocate(Process p) throws InterruptedException {
@@ -100,15 +100,13 @@ public abstract class MemManager {
         p.setAddress(freeAddress);
 
         // fill from freeAddress to freeAddress + size with the processes id.
-        Arrays.fill(_memory,freeAddress,(freeAddress+p.getSize()),p.getID());
+        Arrays.fill(_memory, freeAddress, (freeAddress + p.getSize()), p.getID());
 
         // Re-caculate the value of the _largestSpace.
         reCalculateLargestSpace();
 
         // the state of memory has changed.
         _changed = true;
-
-
 
         // notify any blocked processes that this operation is complete.
         notifyAll();
@@ -122,7 +120,8 @@ public abstract class MemManager {
     public synchronized void free(Process p) {
 
         // Reset the contents of the memory array used by the process so that it contains '.' again.
-        Arrays.fill(_memory,p.getAddress(),(p.getAddress() + p.getSize()),'.');
+        int endAddress = p.getAddress() + p.getSize();
+        Arrays.fill(_memory, p.getAddress(), endAddress, '.');
 
         // Reset the address allocated to the process to -1.
         p.setAddress(-1);

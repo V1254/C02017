@@ -27,39 +27,37 @@ public class WorstFitMemManager extends MemManager {
     @Override
     protected int findSpace(int s) {
 
-//        // details about the worst fit so far.
-//        int address = -1;
-//        int currentSize = 0;
-//
-//        // counter to go through the _memory
-//        int counter = 0;
-//
-//        while (counter < _memory.length) {
-//
-//            int availableSize = countFreeSpacesAt(counter);
-//
-//            // see if space is at least enough to fit s.
-//            if (availableSize >= s) {
-//
-//                // update the address the first time some space is found that can hold s.
-//                if (address < 0) {
-//                    address = counter;
-//                }
-//
-//                // worst fit.
-//                if (currentSize < availableSize) {
-//                    address = counter;
-//                    currentSize = availableSize;
-//                }
-//
-//            }
-//
-//            counter += currentSize > 1 ? currentSize : 1;
-//        }
+        // address of the essentially the biggest space
+        int address = -1;
+        // size of that space from the address.
+        int currentWorstSize = 0;
 
-        return 0;
+        // loop for the while counter.
+        int counter = 0;
 
+        while(counter < _memory.length){
 
+            int availableSize = countFreeSpacesAt(counter);
+
+            if(availableSize >= s){
+
+                // updating counter & currentWorstSize first time an available address is found.
+                if(address < 0){
+                    address = counter;
+                    currentWorstSize = availableSize;
+                }
+
+                // comparing current worst size to new available size found and adjusting accordingly.
+                if(availableSize > currentWorstSize){
+                    currentWorstSize = availableSize;
+                    address = counter;
+                }
+            }
+
+            counter += availableSize > 1 ? availableSize : 1;
+        }
+
+        return address;
     }
 
 
