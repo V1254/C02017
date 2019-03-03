@@ -119,7 +119,7 @@ public class Process implements Runnable {
      */
     @Override
     public String toString() {
-        String address = Address == -1 ? "U" : String.valueOf(Address);
-        return String.format("%c:%3s+%2d", ID, address, size);
+        String address = this.Address == -1 ? "U" : String.valueOf(this.Address);
+        return String.format("%c:%3s+%2d", this.ID, address, this.size);
     }
 }
