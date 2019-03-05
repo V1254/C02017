@@ -221,6 +221,14 @@ RAID5: Block-level striping with distributed parity that can survive failure of 
 
 ![](https://i.imgur.com/6KqWbhf.png)
 
+## Summary
+
+- File is logical representation of data on 2nd-ary storage.
+- Has various attributes
+- Directory is a special file that contains other files
+- Implementation needs to be efficient with space usage and speed of retrieval.
+- Need to manage complex failure prone systems.
+
 
 
 
