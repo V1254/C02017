@@ -48,13 +48,13 @@ public class ClientState implements Runnable {
 
     public String readLineTimeOut(BufferedReader reader, long timeout) throws TimeoutException, IOException {
 
-        long currentTime = System.currentTimeMillis();
+        long startTime = System.currentTimeMillis();
 
         while (!reader.ready()) {
 
             // check the guess hasnt taken longer than the timeout
-            if (System.currentTimeMillis() - currentTime >= timeout)
-                throw new TimeoutException("Took too long!!!!!!!!!");
+            if (System.currentTimeMillis() - startTime >= timeout)
+                throw new TimeoutException();
 
             // delay between each guess
             try {
@@ -98,10 +98,17 @@ public class ClientState implements Runnable {
     /**
      * @return if the game is over or not.
      */
-    boolean is_finished() {
+    boolean isFinished() {
         return _finished;
     }
 
+    void setFinished(boolean t){
+        this._finished = t;
+    }
+
+    /**
+     * Main interaction with the local user of the client program.
+     */
     @Override
     public void run() {
 
@@ -110,11 +117,9 @@ public class ClientState implements Runnable {
                 lastInput = readLineTimeOut(_tty, 500);
                 o.printf("%s%n", lastInput);
             } catch (TimeoutException e) {
-                System.err.println("Took too long to enter something.");
-                e.printStackTrace();
+                System.out.println("Time out exception: " + e.getMessage());
             } catch (IOException e) {
-                System.err.println("Error retrieving input");
-                e.printStackTrace();
+                System.out.println("I/O exception: " + e.getMessage());
             }
         }
 
