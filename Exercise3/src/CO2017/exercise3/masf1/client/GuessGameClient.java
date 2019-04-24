@@ -9,7 +9,11 @@ import java.io.Writer;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
+/**
+ * Simple client class for playing the number guessing game.
+ */
 public class GuessGameClient {
 
     /**
@@ -23,28 +27,63 @@ public class GuessGameClient {
             System.exit(-1);
         }
 
-       try(Socket server = new Socket(args[0],Integer.valueOf(args[1]))){
+        // set up server and streams
+        Socket server = new Socket(args[0], Integer.parseInt(args[1]));
+        BufferedReader in = new BufferedReader(new InputStreamReader(server.getInputStream(), StandardCharsets.UTF_8));
+        PrintWriter out = new PrintWriter(server.getOutputStream(), true);
 
-           // TODO: delete
-           System.out.println("Connected to " + server.getInetAddress());
-
-           // I/O
-           BufferedReader in = new BufferedReader(new InputStreamReader(server.getInputStream(), StandardCharsets.UTF_8));
-           PrintWriter out = new PrintWriter(server.getOutputStream(),true);
-
-          // new thread for client inputs
-           ClientState client = new ClientState(out);
-           new Thread(client).start();
-
-           String[] response = in.readLine().split(":");
-           client.userPrint(false,String.format("New guessing game. Range is 1..%s. Time limit is %ss",response[1],inSeconds(Long.valueOf(response[2]))));
+        ClientState client = new ClientState(out);
+        new Thread(client).start();
 
 
-           // TODO: add loop to read server response.
-       }
+        // response from server.
+        String[] response = in.readLine().split(":");
+
+        // out message.
+        String startMessage = String.format("New guessing game. Range is 1..%s. Time limit is %ss", response[1], inSeconds(Long.parseLong(response[2])));
+
+        // print the first message
+        client.userPrint(false, startMessage);
+
+        // read responses from server till game is finished.
+        while (!client.isFinished()) {
+
+            // read the response
+            response = in.readLine().split(":");
+
+            String scoreState = response[0].toUpperCase();
+
+            if (scoreState.equals("HIGH") || scoreState.equals("LOW")) {
+                // create the string.
+                String msg = String.format("Turn %s: %s was %s, %ss remaining",
+                        response[2],
+                        client.getLastInput(),
+                        response[0],
+                        inSeconds(Long.parseLong(response[1])));
+
+                // print to the user
+                client.userPrint(false, msg);
+            } else if (scoreState.equals("ERR")) {
+                String msg = String.format("ERROR: Turn %s: %ss remaining",
+                        response[2],
+                        inSeconds(Long.parseLong(response[1])));
+                client.userPrint(false, msg);
+            }
+
+            // check if the game is won
+            if (scoreState.equals("WIN")) {
+                String msg = String.format("Turn %s: target was %s - %s",
+                        response[1],
+                        response[2],
+                        response[0]);
+                client.userPrint(true, msg);
+                client.setFinished(true);
+            }
+        }
+        server.close();
     }
 
-    private static double inSeconds(long t){
+    private static double inSeconds(long t) {
         return TimeUnit.MILLISECONDS.toSeconds(t);
     }
 }
