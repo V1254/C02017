@@ -110,7 +110,7 @@ public class GameState implements Runnable {
         return timeRemaining > 0 ? timeRemaining : 0;
     }
 
-    public double getRemainingSeconds(){
+    public double getTimeRemainingSeconds(){
         return TimeUnit.MILLISECONDS.toSeconds(getTimeRemaining());
     }
 
