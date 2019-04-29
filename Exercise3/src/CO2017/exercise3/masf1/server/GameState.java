@@ -78,7 +78,7 @@ public class GameState implements Runnable {
      *
      * @return the target number for this instance of the game
      */
-    public int getTarget() {
+    int getTarget() {
         return this.target;
     }
 
@@ -87,7 +87,7 @@ public class GameState implements Runnable {
      *
      * @return the number of guesses made so far.
      */
-    public int getGuesses() {
+    int getGuesses() {
         return this.guesses;
     }
 
@@ -96,7 +96,7 @@ public class GameState implements Runnable {
      *
      * @return true if and only if the game is over (either because the player guessed correctly, or because time is up
      */
-    public boolean finished() {
+    boolean finished() {
         return this.finished;
     }
 
@@ -105,7 +105,7 @@ public class GameState implements Runnable {
      *
      * @return the amount of time (in milliseconds) still remaining for the player to guess the number.
      */
-    public long getTimeRemaining() {
+    long getTimeRemaining() {
         long timeRemaining = this.endingTime - System.currentTimeMillis();
         return timeRemaining > 0 ? timeRemaining : 0;
     }
@@ -124,7 +124,7 @@ public class GameState implements Runnable {
      *
      * @param guess -  a guess.
      */
-    public void guess(int guess) {
+    void guess(int guess) {
         if (getTimeRemaining() <= 0) {
             this.gameState = "LOSE";
         } else if (guess == target) {

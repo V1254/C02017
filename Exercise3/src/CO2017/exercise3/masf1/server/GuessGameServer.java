@@ -12,6 +12,12 @@ import java.util.concurrent.TimeUnit;
  */
 public class GuessGameServer {
 
+     /**
+     * Guessing game controller main method.
+     *
+     * @param args - expecting an array of 3 elements: port number, ,maximum number and time limit(in seconds) for the game.
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
         if (args.length != 3) {
             System.err.println("Usage: java GuessGameServer <port> <maximum target> <time limit> ");
