@@ -35,49 +35,35 @@ public class GuessGameClient {
         ClientState client = new ClientState(out);
         new Thread(client).start();
 
-
-        // response from server.
-        String[] response = in.readLine().split(":");
+        String[] serverResponse = in.readLine().split(":");
 
         // out message.
-        String startMessage = String.format("New guessing game. Range is 1..%s. Time limit is %ss", response[1], inSeconds(Long.parseLong(response[2])));
+        String initialMessage = String.format("New guessing game. Range is 1..%s. Time limit is %ss", serverResponse[1], inSeconds(Long.valueOf(serverResponse[2])));
 
         // print the first message
-        client.userPrint(false, startMessage);
+        client.userPrint(false, initialMessage);
 
         // read responses from server till game is finished.
         while (!client.isFinished()) {
 
             // read the response
-            response = in.readLine().split(":");
+            serverResponse = in.readLine().split(":");
 
-            String scoreState = response[0].toUpperCase();
+            String scoreState = serverResponse[0].toUpperCase();
+            String outMsg;
 
-            if (scoreState.equals("HIGH") || scoreState.equals("LOW")) {
-                // create the string.
-                String msg = String.format("Turn %s: %s was %s, %ss remaining",
-                        response[2],
-                        client.getLastInput(),
-                        response[0],
-                        inSeconds(Long.parseLong(response[1])));
-
-                // print to the user
-                client.userPrint(false, msg);
-            } else if (scoreState.equals("ERR")) {
-                String msg = String.format("ERROR: Turn %s: %ss remaining",
-                        response[2],
-                        inSeconds(Long.parseLong(response[1])));
-                client.userPrint(false, msg);
-            }
-
-            // check if the game is won
+            // change outMsg based on scoreState from server.
             if (scoreState.equals("WIN")) {
-                String msg = String.format("Turn %s: target was %s - %s",
-                        response[1],
-                        response[2],
-                        response[0]);
-                client.userPrint(true, msg);
+                outMsg = String.format("Turn %s: target was %s - %s", serverResponse[1], serverResponse[2], serverResponse[0]);
+                client.userPrint(true, outMsg);
                 client.setFinished(true);
+            } else if (scoreState.equals("HIGH") || scoreState.equals("LOW")) {
+                // create the string.
+                outMsg = String.format("Turn %s: %s was %s, %ss remaining", serverResponse[2], client.getLastInput(), serverResponse[0], inSeconds(Long.valueOf(serverResponse[1])));
+                client.userPrint(false, outMsg);
+            } else {
+                outMsg = String.format("ERROR: Turn %s: %ss remaining", serverResponse[2], inSeconds(Long.valueOf(serverResponse[1])));
+                client.userPrint(false, outMsg);
             }
         }
         server.close();

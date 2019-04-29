@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -59,11 +58,19 @@ public class GuessGameServerHandler implements Runnable {
      */
     public GuessGameServerHandler(int mv, long tl, Socket c1) {
         this.mv = mv;
-        this.timeLimit = TimeUnit.MILLISECONDS.toSeconds(tl); // convert to seconds for printing.
+        this.timeLimit = tl; // convert to seconds for printing.
         this.game = new GameState(mv, this.timeLimit, this);
         this.client = c1;
         this.id = (char) nextID;
-        if (nextID > 90) {
+        setNextID(); // set the id for the next instance.
+    }
+
+
+    /**
+     * Increments the current nextID or resets it back to 'A' if all upper case letters used.
+     */
+    private void setNextID() {
+        if (nextID >= 90) {
             // reset the nextId;
             nextID = 65;
         } else {
@@ -72,13 +79,14 @@ public class GuessGameServerHandler implements Runnable {
         }
     }
 
+
     /**
      * Helper function to standardise sending responses to the client via the socket output stream.
      *
      * @param msg - protocol message to be sent to a client; NOT terminated with an end of line.
      * @throws IOException - if the socket is already closed
      */
-    private void send(String msg) throws IOException {
+    void send(String msg) throws IOException {
         out.printf("%s%n", msg);
     }
 
@@ -87,7 +95,7 @@ public class GuessGameServerHandler implements Runnable {
      *
      * @param msg - message to be displayed on the server-side console.
      */
-    private void log(String msg) {
+    void log(String msg) {
         System.out.println(id + " " + msg);
     }
 
@@ -96,7 +104,7 @@ public class GuessGameServerHandler implements Runnable {
      *
      * @throws IOException - if the socket is already closed.
      */
-    public void shutdownInput() throws IOException {
+    void shutdownInput() throws IOException {
         client.shutdownInput();
     }
 
@@ -117,7 +125,7 @@ public class GuessGameServerHandler implements Runnable {
             Thread t = new Thread(game);
             t.start();
 
-            // Print out a server-side message
+            // Print out server-side messages
             log("connection : " + client.getInetAddress());
             log("start watching");
             log("target is " + game.getTarget());
@@ -135,7 +143,7 @@ public class GuessGameServerHandler implements Runnable {
                 // attempt to fetch the guess.
                 // can prolly do this in another method to clean up this cancer long method.
                 try {
-                    lastGuess = Integer.valueOf(readLineTimeout(in, 500));
+                    lastGuess = Integer.valueOf(readLineTimeout(in, 1000));
                     if (lastGuess >= GameState.MINVAL && lastGuess <= mv) {
                         validGuess = true;
                     }
@@ -149,20 +157,17 @@ public class GuessGameServerHandler implements Runnable {
 
                 if (!timedOut) {
                     if (!validGuess) {
-                        // default error message.
                         send(String.format("ERR:%s:%s", game.getTimeRemaining(), game.getGuesses()));
-
-                        // error message based on last guess.
+                        // two possible reasons for not valid guess: not an int or out-of-range.
                         if (intGuess) {
                             log(String.format("%s (ERR out of range)-%ss/%s", lastGuess, game.getTimeRemainingSeconds(), game.getGuesses()));
                         } else {
                             log(String.format("%s (ERR non-integer)-%ss/%s", lastGuess, game.getTimeRemainingSeconds(), game.getGuesses()));
                         }
+
                     } else {
                         // submit the guess to the GameState.
                         game.guess(lastGuess);
-
-                        // ensure game is not finished.
                         if (!game.finished()) {
                             send(String.format("%s:%s:%s", game.toString(), game.getTimeRemaining(), game.getGuesses()));
                             log(String.format("%s (%s)-%ss/%s", lastGuess, game.toString(), game.getTimeRemainingSeconds(), game.getGuesses()));
@@ -178,6 +183,8 @@ public class GuessGameServerHandler implements Runnable {
             send(String.format("%s:%s:%s", game.toString(), game.getGuesses(), game.getTarget()));
             if (game.toString().equalsIgnoreCase("LOSE"))
                 log(String.format("- (%s)--%ss/%s", game.toString(), game.getTimeRemainingSeconds(), game.getGuesses()));
+
+            // game is over.
             log("Game over");
 
 

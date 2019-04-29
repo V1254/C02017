@@ -110,7 +110,12 @@ public class GameState implements Runnable {
         return timeRemaining > 0 ? timeRemaining : 0;
     }
 
-    public double getTimeRemainingSeconds(){
+    /**
+     * How many seconds before the game is over.
+     *
+     * @return the amount of time (in seconds) still remaining for the player to guess the number.
+     */
+    public double getTimeRemainingSeconds() {
         return TimeUnit.MILLISECONDS.toSeconds(getTimeRemaining());
     }
 
@@ -155,6 +160,7 @@ public class GameState implements Runnable {
                 try {
                     ggsh.shutdownInput();
                 } catch (Exception e) {
+                    System.out.println("Error shutting down handler.");
                     e.printStackTrace();
                 }
                 break;

@@ -99,7 +99,7 @@ public class ClientState implements Runnable {
      * @return if the game is over or not.
      */
     boolean isFinished() {
-        return _finished;
+        return this._finished;
     }
 
     void setFinished(boolean t){
@@ -114,7 +114,7 @@ public class ClientState implements Runnable {
 
         while (!_finished) {
             try {
-                lastInput = readLineTimeOut(_tty, 500);
+                lastInput = readLineTimeOut(_tty, 1000);
                 o.printf("%s%n", lastInput);
             } catch (TimeoutException e) {
                 System.out.println("Time out exception: " + e.getMessage());
