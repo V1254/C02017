@@ -99,7 +99,7 @@ Access in turns:
 	- each process gets to use the cpu for a amount of time.
 	- interested processes perfom busy waiting untill cpu is released.
 	
-Peterson's algorith: same as above with additional lock
+Peterson's algorithm: same as above with additional lock
 	- busy waiting only performed if other processes are interested in the critical region.
 	
 
@@ -110,11 +110,27 @@ Java synchronised method implements a monitor which automatically ensures mutual
 ============================================================================================================================================
 							Memory Management
 ============================================================================================================================================
+Page : 
+	- chunk of virtual memory of roughly similiar small size.
+	
+Page Frame:
+	- VM page stored in RAM.
+	
+Page fault:
+	- Accessing a page that is not mapped in memory.
 
 Memory hierarchy:
 	- Describes the inverse speed/size relationship between different memories and their proximity to the processor.
 	- processor registers at level 0, on-processor cache level 1 , RAM level 2 and then 2ndary storage.
 	- There is an order of magnitude difference in speed and size between levels in the hierarchy.
+	
+Memory Swapping Implementations:
+	- First Fit:
+		- assign the first space available.
+	- Best Fit:
+		- assign the best fitting space.
+	- Worst Fit:
+		- ~ Best Fit.
 	
 Direct Memory Model vs Virtual memory model swapping:
 	- DMM swaps the entire process memory as a single chunk.
@@ -123,8 +139,43 @@ Direct Memory Model vs Virtual memory model swapping:
 	- Only the pages being used are stored in memory (called page frames).
 	- This means that only relatively small amounts of data are being moved in/out from storage when swapping occurs.
 	
-The Working set is the set of VM pages that are being used by an active process. We want to avoid the very significant time penalty of switching them in/out.
+The Working set is the set of VM pages that are being used by an active process. 
+	- We want to avoid the very significant time penalty of switching them in/out.
 
+Page replacement happens whenever a page fault occurs
+
+Page Replacement algorithms:
+	- Clairvoyant
+	- Not Recently Used
+	- First in First Out
+	- First in First Out second chance.
+	- Clock Page Replacement
+	- Least Recently Used.
+	
+Clairvoyant:
+	- swap out to disk the page that is referenced the latest.
+	- used to determine efficient of other replacement algorithms.
+	
+Not Recently Used:
+	- Each frame has a referenced bit: (0 = not referenced, 1 = referenced).
+	- Periodically Os resets all bits to 0.
+	- Replace random 0 bit page when page fault occurs.
+	
+First in First Out:
+	- Maintain a FIFO queue of pages.
+	- Replace the first page in queue when fault occurs.
+
+First in First Out second chance:	
+	- If head of queue has been referenced give it a second chance by moving it to the back of queue.
+	
+Clock page replacement:
+	- functionally similiar to FIFO but more efficient to implement.
+	
+Least Recently Used:
+	- Each page has a value corresponding to a time when the page was referenced.
+	- Replace the page with the smallest time / oldest referenced.
+	
+Know NRU,FIFO,FIFO 2nd, CL and LRU working out.
 	
 ============================================================================================================================================
 							File Systems.
