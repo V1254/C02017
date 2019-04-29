@@ -11,6 +11,9 @@ Flooding:
 	Routing network traffic to every node in a network by re-broadcasting every incoming packet
 	to every available outgoing connection.
 	
+Used in cases wherre most traffic will be of interest to large proportion of the nodes.
+	-> streaming of live events as an example.
+	
 Four layers of TCP/IP Model:
 |	- Application
 |	- Transport
@@ -25,10 +28,6 @@ OSI Mode:
 	- Network
 	- Data link
 	- Physical
-
-
-Used in cases wherre most traffic will be of interest to large proportion of the nodes.
-	-> streaming of live events as an example.
 	
 Prevention of Filling Up:
 	-> hop-counter on each packet of data.
@@ -96,7 +95,6 @@ UDP :
 	-> simple connectionless protocol
 	-> adds only transport header to ip.
 	-> used by single request/response applications.
-	
 	
 Connection-oriented examples: File Transfer & Remote Login
 Connectionless examples: database queries.
