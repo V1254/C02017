@@ -183,7 +183,9 @@ Know NRU,FIFO,FIFO 2nd, CL and LRU working out.
 File:
 	- Uniform logical view of information storage.
 Directory:
-	- File that references other files.
+	- Collection of files and other directories
+	- Special file containing file descriptors for all the files in the directory.
+	- Each descriptor contains some meta data and a location where the file can be located.
 	
 Contiguous allocation:
 	- assign contiguous blocks of memory to a file.
