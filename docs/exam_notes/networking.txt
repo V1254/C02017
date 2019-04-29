@@ -1,0 +1,107 @@
+Networking:
+
+Service:
+	- A set of primitives that a layer provides to the layer above it.
+	
+Protocol:
+	- A set of rules governing the format and semantics of data exchanged
+	by layers of the same level.
+
+Flooding:
+	Routing network traffic to every node in a network by re-broadcasting every incoming packet
+	to every available outgoing connection.
+	
+Four layers of TCP/IP Model:
+|	- Application
+|	- Transport
+|	- Internet
+V	- Network
+
+OSI Mode:
+	- Application
+	- Presentation
+	- Session
+	- Transport
+	- Network
+	- Data link
+	- Physical
+
+
+Used in cases wherre most traffic will be of interest to large proportion of the nodes.
+	-> streaming of live events as an example.
+	
+Prevention of Filling Up:
+	-> hop-counter on each packet of data.
+	-> decrement counter after every re-broadcast
+	-> drop packets with 0 hop counters.
+	
+Three Way Handshake:
+	-> A sends a conenction request to B with a sequence numbers.
+	-> B sends an acknowledgment back including A and B's sequence number.
+	-> A sends first data, plus both sequence numbers.
+
+Open Shortest Path First  Protocol:
+	-> used by routers within an area(subnet) to communicate so that they can keep routing tables up to date.
+	-> Flooding is used by each router to transmit its state.
+	-> Each router gets dynamic information about the connectivity and costs of other routers
+	in the same area using link state protocol messages.
+	-> Each router then collects this data and uses dijkstras algorithm to construct
+	its own routing table.
+	
+	
+Interior Gateway Routing Protocol vs Exterior Gateway Routiung protocol:
+	-> network is divided into multiple autonomous systems.
+	-> interior gateway routing protocol operates within an autonomous system.
+	-> each will generally have detailed routing knowledge within the system and can use the simplest
+	and most effiecient routing (usually backbone connecting areas).
+	-> Each AS is connected to others via Boundary routers which operate using the
+	exterior gateway routing protocol.
+	-> this protocol routes traffic to the correct boundary router, but may take other
+	non-functional criteria(traffic type etc.) into account.
+	
+Transport Layers services for the network layer:
+	-> adds network services for individual processes on a host.
+	-> network sockets gives connection endpoints addresses that are connected to
+	individual processes.
+
+
+Physical layer:
+	-> transmission hardware
+	-> Guided: (cable & fibre optics)
+	-> Unguided: radio & lasers.
+	
+Data link layer:
+	-> transmit data reliably over non-reliable channels.
+	-> software for effective transmission of bits
+	
+	
+Network Layer function:
+	-> translates logical network addresses into physical addresses. 
+	-> essentially responsible for delivering datagrams from source to destination.
+	-> uses the Internet protocol.
+	
+Transport layer function:
+	-> allows peers entities to carry on a establish communication channel
+	-> Uses TCP/UDP protocols.
+	
+Application layer function:
+	-> contains application-oriented protocols.	
+	
+TCP :
+	-> connection-oriented protocol
+	-> provides reliable service over unreliable internetwork.
+	-> designed to adapt to network conditions and deal with various sorts of errors.
+	
+UDP :
+	-> simple connectionless protocol
+	-> adds only transport header to ip.
+	-> used by single request/response applications.
+	
+	
+Connection-oriented examples: File Transfer & Remote Login
+Connectionless examples: database queries.
+	
+	
+	
+	
+	

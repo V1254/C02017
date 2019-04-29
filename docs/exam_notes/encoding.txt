@@ -1,0 +1,65 @@
+Encoding strategies:
+
+Used at the data link layer to increase reliabiliy of the transmitted bits.
+
+Need to Know:
+	- Stuffing Byte
+	- Stuffing Bit
+	- Parity encoding
+	- Redundant encoding
+	- Triple modular redundancy
+	- Two-Dimensional Parity
+	- Hamming code
+	
+Stuffing Byte:
+	- delimeter bit placed at the start/end of frame
+	- control bit placed before each occurence of control/delimeter bit.
+	
+Stuffing Bit:
+	- delimeter is 01111110
+	- after every occurence of 5 1's then a 0 is placed.
+	
+Parity encoding:
+	- last bit in each byte reprsent the parity of the values before it.
+	- 1 represents odd number of `1` occurences, 0 for even.
+	
+Redundant encoding:
+	- above are examples
+	- redundant verification data is added to the real content.
+	- parity encoding can only detect errors and not fix them.
+	
+Triple Modular Redundancy:
+	- each 0/1 replaced by three of its kind.
+	- can detect and correct single bit errors.
+	- high overhead.
+	- leading to additional traffic.
+
+Two-dimensional parity:
+	- 1 byte for veritcal parity
+	- 1 byte for horizontal parity
+	- last bit in the horizontal parity represents the sum parity.
+	- can correct one-bit errors and detect multi-bit errors without
+	fixing them
+
+Hamming Code:
+	- Corrects all single bit errors and can detect up to 3 bit errors.
+	- Only need to know Hamming(7,4).
+	- Examples are hamming : (3,1) (7,4) (15,11)
+	- Total data is represented by the first number and second represents
+	the number of `parity` bits.
+	- Hamming (7,4) parity bits at 1,2,4 positions.
+	- Works because after recomputing parity bits, the incorrect bit is
+	identified by the location of the mismatching parity bits.
+	
+Code Rate: the ratio of transmitted bits to content bits:
+	parity(8,7) => 7/8.
+	tmr(3,1) => 1/3.
+	hamming (7,4) => 4/7.
+	
+Hamming distance: the number of bits that need to be wrong flipped to get a valid code:
+	parity: 2
+	tmr : 3
+	hamming: min 3 or 4.
+
+	
+	

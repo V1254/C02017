@@ -1,0 +1,86 @@
+C02017 Definitions:
+
+Program: code ready to execute on a system
+Process: a program in execution together with its data and other properties.
+
+interrupts:
+	- Events that cause the cpu to stop the currently running process and switch to the special process for handling the interrupts
+	- IO, Clock hardware etc..
+
+non-preemptive scheduling: 
+	- processes cannot be context switched out unless they block on I/O.
+	- Used in systems with limited multitasking and with single users/processes such as batch systems.
+	- low turnaround and high cpu usage, low response time.
+	
+preemptive scheduling:
+	- processes can be context switched out at any time with clock interrupts.
+	- Used in systems with multitasking and multiple users/processes such as interactive systems.
+	- high cpu usage and low response time, low turnaround time.
+	
+interleaving: statements in concurrent threads will execute in non-deterministic sequence.
+
+Race Conditions: situtations when two or more processes are interacting with shared data, and their
+result depends on the order of execution.
+
+Deadlocks occurs when the following are satisfied:
+	-> Mutual exclusion
+	-> Hold & Wait
+	-> no preemption
+	-> circular wait.
+
+
+Removing race conditions requires: mutual exclusion, progress and bounded wait.
+
+Disabling interrupts: achieves mutual exclusion.
+	-> non-preemptive
+	-> progress and bounded wait is not assured.
+	
+Access in turns:
+	-> each process gets to use the cpu for a amount of time.
+	-> interested processes perfom busy waiting untill cpu is released.
+	
+Peterson's algorith: same as above with additional lock
+	-> busy waiting only performed if other processes are interested in the critical region.
+	
+
+any code that changes/interacts with the critical resource is a critical section.
+Java synchronised method implements a monitor which automatically ensures mutual exclusion.
+
+Memory hierarchy:
+	- Describes the inverse speed/size relationship between different memories and their proximity to the processor.
+	- processor registers at level 0, on-processor cache level 1 , RAM level 2 and then 2ndary storage.
+	- There is an order of magnitude difference in speed and size between levels in the hierarchy.
+	
+The Working set is the set of VM pages that are being used by an active process. We want to avoid the very significant time penalty of switching them in/out.
+
+Direct Memory Model vs Virtual memory model swapping:
+	- DMM swaps the entire process memory as a single chunk.
+	- Memory is allocated to a process as a whole and when a process is context switched the entire memory needs to be moved to 2ndary storage.
+	- VMM divides a process's memory into uniform pages of relatively small size.
+	- Only the pages being used are stored in memory (called page frames).
+	- This means that only relatively small amounts of data are being moved in/out from storage when swapping occurs.
+	
+RAID0:
+	- Data is stripped across the two devices.
+	- Draw a simple diagram to illustrate this.
+	- Error on either device will cause loss of data.
+	- Storage space = n * s
+	- This raid used to increase perfomance and maximise space.
+	
+RAID1:
+	- Data is copied mirror onto the other harddrive.
+	- Draw a simple diagram if needed.
+	- Can loose one hole device without data loss.
+	- space is only s. - the space of the one device.
+	
+RAID5:
+	- need minimum 3 devices.
+	- Data and parity data is stripped across the devices.
+	- can lose one disk with no data loss as parity can be used to recover it.
+	- recovering data might take a long time.
+	- space is (n-1) * s.
+	
+	
+	
+	
+	
