@@ -1,7 +1,28 @@
 C02017 Definitions:
+============================================================================================================================================
+							Processes and Multi-tasking
+============================================================================================================================================
+Program: code ready to execute on a system.
 
-Program: code ready to execute on a system
 Process: a program in execution together with its data and other properties.
+
+Interrupt: Events that cause the CPU to stop the execution of the currently running process and switch to the special process
+to handle the interrupt.
+
+Context switching: the action of replacing a process currently running in memory with another.
+
+Dispatcher (Low level scheduler): responsible for handling interrupts and selecting process to run next.
+
+Process States:
+	- Running
+	- Blocked
+	- Ready
+	- Finished
+	
+Order of states:
+	- Ready -> Running -> Finished
+	- Ready -> Running -> Block -> Ready/Finish
+A process can Only be in one of the states at a time.
 
 interrupts:
 	- Events that cause the cpu to stop the currently running process and switch to the special process for handling the interrupts
@@ -17,42 +38,84 @@ preemptive scheduling:
 	- Used in systems with multitasking and multiple users/processes such as interactive systems.
 	- high cpu usage and low response time, low turnaround time.
 	
+Non-preemptive scheduling policies: First Come First Served (FCFS) & Shortest Job First (SJF) 
+Preemptive scheduling policies: Shortest Remaining Time First(SRTF) & Round Robin.
+
+Description of policies:
+
+FCFS:
+	- processes are run in the order that they arrive in.
+SJF:
+	- processes are reordered so that the job with the shortest runtime is selected to run.
+SRTF:
+	- same as above, but processes are preempted if a job with shorter remaining time arrives.
+RR:
+	- each process in order gets a fixed time to use the CPU before being context switched out for the next process.
+	
+Know how to do the above to schedule processes for the exam.
+
+============================================================================================================================================
+							Concurrency & Threads.
+============================================================================================================================================
+
+Thread(lightweight process): 
+	- An independent sequence of execution within a program.
+	
+Deadlock: process waiting for an even that will never occur.
+
+LiveLock : deadlock where processes are only reacting to each other and nothing
+			moves forward.
+	
 interleaving: statements in concurrent threads will execute in non-deterministic sequence.
 
 Race Conditions: situtations when two or more processes are interacting with shared data, and their
 result depends on the order of execution.
 
-Deadlocks occurs when the following are satisfied:
-	-> Mutual exclusion
-	-> Hold & Wait
-	-> no preemption
-	-> circular wait.
+Semaphore: non-negative value representing the quantity of a shared resource.
 
+Deadlocks occurs when the following occur:
+	- Mutual exclusion
+		- each shared resource can be held at most by one process/thread.	
+	- Hold & Wait
+		- processes currently holding resources may request more resources.
+	- no preemption
+		- resources granted cannot be forcefully taken away.
+	- circular wait.
+		- circular chain of processes waiting for resources held by the
+		  next member of the chain.
 
+Rectifying deadlocks:
+	- preemption
+	- rollback
+	- kill processes
+  
 Removing race conditions requires: mutual exclusion, progress and bounded wait.
 
 Disabling interrupts: achieves mutual exclusion.
-	-> non-preemptive
-	-> progress and bounded wait is not assured.
+	- non-preemptive
+	- progress and bounded wait is not assured.
 	
 Access in turns:
-	-> each process gets to use the cpu for a amount of time.
-	-> interested processes perfom busy waiting untill cpu is released.
+	- each process gets to use the cpu for a amount of time.
+	- interested processes perfom busy waiting untill cpu is released.
 	
 Peterson's algorith: same as above with additional lock
-	-> busy waiting only performed if other processes are interested in the critical region.
+	- busy waiting only performed if other processes are interested in the critical region.
 	
 
 any code that changes/interacts with the critical resource is a critical section.
 Java synchronised method implements a monitor which automatically ensures mutual exclusion.
+	
+
+============================================================================================================================================
+							Memory Management
+============================================================================================================================================
 
 Memory hierarchy:
 	- Describes the inverse speed/size relationship between different memories and their proximity to the processor.
 	- processor registers at level 0, on-processor cache level 1 , RAM level 2 and then 2ndary storage.
 	- There is an order of magnitude difference in speed and size between levels in the hierarchy.
 	
-The Working set is the set of VM pages that are being used by an active process. We want to avoid the very significant time penalty of switching them in/out.
-
 Direct Memory Model vs Virtual memory model swapping:
 	- DMM swaps the entire process memory as a single chunk.
 	- Memory is allocated to a process as a whole and when a process is context switched the entire memory needs to be moved to 2ndary storage.
@@ -60,6 +123,60 @@ Direct Memory Model vs Virtual memory model swapping:
 	- Only the pages being used are stored in memory (called page frames).
 	- This means that only relatively small amounts of data are being moved in/out from storage when swapping occurs.
 	
+The Working set is the set of VM pages that are being used by an active process. We want to avoid the very significant time penalty of switching them in/out.
+
+	
+============================================================================================================================================
+							File Systems.
+============================================================================================================================================
+File:
+	- Uniform logical view of information storage.
+Directory:
+	- File that references other files.
+	
+Contiguous allocation:
+	- assign contiguous blocks of memory to a file.
+	- File descriptor contains: first block address and length:
+	
+	Advantages:
+		- Easy to implement.
+		- Random access.
+		- ressilient to disk faults.
+	
+	Disadvantages:
+		- need to guess size of file at the start.
+		- fragmentation as a result of files being deleted.
+		
+LinkedList allocation:
+	- A small portion of each memory block contains a pointer to the next block.
+	- File descriptor: first block address.
+	
+	Advantages:
+		- Every block is utilised.
+		- No space lost due to fragmentation.
+		- Size need not be known.
+		
+	Disadvantages:
+		- slow random access.
+		- overhead of storing pointer.
+		
+File Allocation Table:
+	- Store pointer in a seperate ds in memory.
+	- File descriptor: location in fat containing the first block address.
+	
+	Advantages:
+		- no space overhead from storing in mm blocks
+		- random access much easier to achieve.
+		
+	Disadvantages:
+		- FAT may be too large to hold in main memory.
+		- May requires several dis access to read relevant FAT entries.
+
+Inodes:
+	- contains all attributes of a file
+	- has 15 slots to hold addresses; first 12 point directly to memory addresses.
+	- The latter 3 have increasing level of indirection to other inodes.
+
 RAID0:
 	- Data is stripped across the two devices.
 	- Draw a simple diagram to illustrate this.
@@ -79,8 +196,47 @@ RAID5:
 	- can lose one disk with no data loss as parity can be used to recover it.
 	- recovering data might take a long time.
 	- space is (n-1) * s.
+
+============================================================================================================================================
+							Buffering & I/O
+============================================================================================================================================
+
+Two Types of I/O:
+	- Block device
+		- Transfers group of characters.
+	- Character device:
+		- Transfer one character at a time.
+		
+Problem?
+	- Without technique CPU is idle most of the time waiting for data
+	  transfers to finish.
+	  
+Buffer:
+	- Interim memory area which holds data in transit between RAM and device.
+	- Smooth out peaks in I/O demand.
 	
-	
-	
-	
+Types of Buffering:
+	- Input Buffering
+		- Input data stored in the buffer.
+		- Os refill buffer when it is empty.
+	- Output Buffering:
+		- Output data stored in the buffer.
+		- Os empties buffer when it is full.
+
+A double buffer provides more efficiency by allowing a process to read/write to one
+whilst the os empties/fills the other.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	
